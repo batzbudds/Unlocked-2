@@ -35,6 +35,8 @@
 .gallerymeta{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;color:#aaa;font-size:12px}
 .loading{padding:30px;text-align:center;color:#999}
 @media(max-width:360px){.grid{gap:17px 7px}.ico{width:52px;height:52px}.keypad{grid-template-columns:repeat(3,62px)}.locktime{font-size:58px}}
+
+.storybar{display:flex;gap:12px;overflow:auto;padding:4px 0 14px}.story{min-width:58px;text-align:center;font-size:10px;color:#bbb}.storypic{width:50px;height:50px;border-radius:50%;margin:auto auto 4px;background:linear-gradient(145deg,#ff9a9e,#fad0c4);display:flex;align-items:center;justify-content:center;color:#111;font-size:22px;border:2px solid #fff}.meta{font-size:11px;color:#777;margin-top:4px}.divider{height:1px;background:#2d2d32;margin:12px 0}.chiprow{display:flex;gap:7px;overflow:auto;margin:0 0 12px}.chip{border:1px solid #3a3a40;background:#1d1d20;border-radius:18px;padding:7px 11px;white-space:nowrap;font-size:12px}.igpost{background:#17171a;border:1px solid #29292e;border-radius:15px;overflow:hidden;margin-bottom:10px}.ighead{display:flex;align-items:center;gap:9px;padding:11px}.avatar{width:34px;height:34px;border-radius:50%;background:#3a3a40;display:flex;align-items:center;justify-content:center}.igimg{height:220px;display:flex;align-items:center;justify-content:center;font-size:70px;background:linear-gradient(135deg,#34343a,#17171a)}.igbody{padding:10px 12px 13px}.tiny{font-size:11px;color:#888}.selectrow{display:flex;gap:8px;align-items:center}.timeline{border-left:2px solid #35353a;margin:4px 0 0 9px;padding-left:15px}.event{position:relative;padding:0 0 16px}.event:before{content:'';position:absolute;left:-22px;top:3px;width:9px;height:9px;border-radius:50%;background:#777}.event b{font-size:13px}.event span{display:block;color:#999;font-size:12px;margin-top:3px}.callout{border-left:3px solid #777;padding:9px 11px;background:#1b1b1e;border-radius:0 10px 10px 0;color:#ddd;font-size:13px}.disabled{opacity:.55}.composer-note{font-size:11px;color:#777;margin-top:6px}
 </style>
 </head>
 <body>
@@ -67,7 +69,9 @@ const apps=[
 ["WhatsApp","💬","wa",3],["Galerie","🖼️","gallery"],["Kontakte","👤","contacts"],["Telefon","☎️","phone"],
 ["Mail","✉️","mail",2],["Kalender","📅","calendar"],["Maps","🗺️","maps"],["Instagram","◎","instagram"],
 ["Notizen","📝","notes"],["Dateien","📁","files"],["Kamera","📷","camera"],["Musik","♫","music"],
-["Wetter","☀️","weather"],["Uhr","⏱️","clock"],["Einstellungen","⚙️","settings"],["Suchen","⌕","search"]
+["Wetter","☀️","weather"],["Uhr","⏱️","clock"],["Erinnerungen","✓","reminders"],["Safari","🧭","safari"],
+["Sprachmemos","🎙️","voice"],["Health","♥","health"],["Wallet","▣","wallet"],["Übersetzen","文","translate"],
+["Einstellungen","⚙️","settings"],["Suchen","⌕","search"]
 ];
 
 const galleryTopics=[
@@ -130,7 +134,7 @@ function openPage(p){state.page=p;save();render();}
 
 function lock(){
 return `<div class="lock">
-<div><div class="locktime">22:14</div><div class="lockdate">Freitag, 26. September</div>
+<div><div class="locktime">22:14</div><div class="lockdate">Samstag, 26. September</div>
 <div class="polaroid"><div class="teddy">🧸</div><small>16.07♥️</small></div>
 <div style="text-align:center;color:#aaa;font-size:13px;margin-top:20px">PIN eingeben</div>
 <div class="pin">${[0,1,2,3].map((_,i)=>`<i class="dot ${state.pin.length>i?"on":""}"></i>`).join("")}</div></div>
@@ -138,7 +142,7 @@ return `<div class="lock">
 </div>`;
 }
 function home(){
-return `<div class="home"><div class="homehead"><div><div class="hello">Maya</div><div class="small">Donnerstag · 26.09.2026</div></div><div class="small">100%</div></div>
+return `<div class="home"><div class="homehead"><div><div class="hello">Maya</div><div class="small">Samstag · 26.09.2026</div></div><div class="small">100%</div></div>
 <div class="grid">${apps.map(a=>`<button class="appbtn" data-action="app" data-id="${a[2]}"><div class="ico">${a[1]}</div>${a[3]?`<span class="badge">${a[3]}</span>`:""}<div class="appname">${a[0]}</div></button>`).join("")}</div></div>`;
 }
 
@@ -245,6 +249,157 @@ if("burcu".includes(x))results.push("Burcu · WhatsApp · Kontakte · Telefon");
 if("22.09.2026 14:00 termin".includes(x)||x.includes("22.09"))results.push("22.09.2026 · Make-up Termin · Leon Hartmann");
 r.innerHTML=results.length?results.map(z=>`<p>• ${esc(z)}</p>`).join(""):"Keine Treffer";
 }
+
+/* ===== UNLOCKED V2 STORY/DATA PACK ===== */
+const v2Chats={
+"Atelier Noir":[
+["in","Camila: Morgen bitte 9:00 im Studio. Wir haben mehrere Termine.","21.09. · 19:03"],
+["out","bin da","21.09. · 19:05"],
+["in","Julien: Die Fotos sind angekommen.","22.09. · 09:16"],
+["out","perfekt danke","22.09. · 09:19"],
+["in","Camila: Falls der externe Termin bestätigt wird, gib mir kurz Bescheid.","22.09. · 09:41"],
+["out","mach ich","22.09. · 09:43"]
+],
+"Michelle":[
+["in","Bist du noch wach?","21.09. · 23:41"],["out","ja leider 😂","21.09. · 23:44"],
+["in","morgen Kaffee?","21.09. · 23:45"],["out","wenn ich überlebe ja","21.09. · 23:46"]
+],
+"Isabelle":[
+["in","😂 ich kann immer noch nicht glauben was gestern passiert ist","20.09. · 11:13"],
+["out","ich schwöre ich auch","20.09. · 11:18"],["in","du musst mir die fotos schicken","20.09. · 11:19"],
+["out","später ❤️","20.09. · 11:22"]
+],
+"Mama":[
+["in","Hast du heute gegessen?","21.09. · 18:22"],["out","ja mama alles gut","21.09. · 18:40"],
+["in","Meld dich wenn du zuhause bist.","21.09. · 18:41"],["out","mach ich ❤️","21.09. · 18:43"]
+],
+"S.🍂":[["in","Hey","21.09. · 23:47"],["out","?","21.09. · 23:49"],["in","bist du wach","21.09. · 23:50"]],
+"Burcu":[
+["in","Maya du wirst vermisst ich vermisse dich ❤️","26.09. · 09:11"],
+["in","Ich weiß nicht ob du das irgendwann liest aber bitte melde dich","26.09. · 14:38"],
+["in","Ich mache mir langsam wirklich Sorgen","27.09. · 08:02"]
+]};
+
+const storyEmails=[
+{id:"MAIL-021",title:"September Moodboard",from:"Julien Morel",date:"20.09.2026 · 15:42",body:"Anbei die aktuelle Version.\nLG Julien"},
+{id:"MAIL-022",title:"Re: Externer Termin",from:"Camila · Atelier Noir",date:"21.09.2026 · 09:54",body:"Wenn du den Termin annimmst, trag ihn bitte sauber ein. Externe Termine bitte immer mit Adresse."},
+{id:"MAIL-031",title:"Make-up Termin",from:"Leon Hartmann",date:"21.09.2026 · 10:17",body:"Hallo Maya,\nich würde gerne einen Termin für ein Make-up vereinbaren. Ich habe deinen Kontakt über eine Empfehlung bekommen.\nViele Grüße\nLeon"},
+{id:"MAIL-032",title:"Termin / Adresse",from:"Leon Hartmann",date:"21.09.2026 · 11:02",body:"Hier nochmal die Adresse für den Termin am 22.09. um 14:00 Uhr.\nDanke und bis dann."},
+{id:"MAIL-033",title:"Studio-Organisation",from:"Camila · Atelier Noir",date:"21.09.2026 · 18:11",body:"Morgen bitte pünktlich sein. Wir haben mehrere Termine."},
+{id:"MAIL-034",title:"Moodboard September",from:"Julien Morel",date:"20.09.2026 · 15:42",body:"Anbei die aktuelle Version."}
+];
+const storyCalendar=[
+["CAL-021","18.09.2026 · 11:00","Atelier Noir · Shooting","Arbeit"],
+["CAL-022","20.09.2026 · 19:30","Dinner mit Isabelle","Privat"],
+["CAL-031","22.09.2026 · 14:00","Make-up Termin · Leon Hartmann","Externe Adresse"],
+["CAL-032","23.09.2026","WG","keine weiteren Details"],
+["CAL-033","24.09.2026 · 09:00","Atelier Noir","Arbeit"],
+["CAL-034","26.09.2026","—","keine Einträge"]
+];
+const storyContacts=[
+["Maya","Eigene Karte","23 · Makeup / Stylist"],["Burcu","WG","psychologische Beratung"],["Camila","Atelier Noir","Studio / Arbeit"],
+["Michelle","Atelier Noir","Kontakt"],["Isabelle","Freundin","privat"],["Mama","Familie","privat"],["Papa","Familie","privat"],
+["Julien Morel","Atelier Noir","Fotografie"],["Nora","Freundin","privat"],["Sergio Ramirez","Ex","privat"],["Studio-Lover","Atelier","Kontakt"],
+["Noah Keller","Atelier Noir","ehemaliger Praktikant"],["Leon Hartmann","Kunde","Make-up Termin"]
+];
+
+function storyChat(name){
+let msgs=(v2Chats[name]||chatData[name]||[]).slice();
+if(name==="Burcu"&&state.burcuSent){
+msgs.push(["out",state.burcuLast||"Hi ich bin nicht Maya ich habe ihr Handy gefunden","Jetzt"]);
+if(!state.burcuStage) state.burcuStage=1;
+if(state.burcuStage>=1){
+msgs.push(["in","Wer bist du? Wo hast du ihr Handy gefunden?","Jetzt"]);
+msgs.push(["out","Ich versuche herauszufinden was passiert ist.","Jetzt"]);
+msgs.push(["in","Okay… ich glaube ich muss dir helfen. Maya war an einem Tag vor ihrem Verschwinden sehr komisch.","Jetzt"]);
+}
+if(state.burcuStage>=2){msgs.push(["in","Achte mal auf den Tag. Und schau dir diese Person nochmal genauer an.","Jetzt"]);}
+if(state.burcuStage>=3){msgs.push(["in","Noah? Der Praktikant von damals? Maya fand ihn schon damals unangenehm.","Jetzt"]);}
+if(state.burcuStage>=4){msgs.push(["in","Sie hat mir einmal erzählt, dass sie eine klare Grenze ziehen musste. Ich dachte damals, es wäre einfach nur unangenehm.","Jetzt"]);}
+}
+return msgs;
+}
+function wa(){
+const names=["Burcu","Mama","Isabelle","Atelier Noir","Michelle","S.🍂","Julien Morel","Nora"];
+if(state.page.startsWith("chat:")){
+const name=state.page.slice(5), msgs=storyChat(name);
+return `<div class="page">${bar("WhatsApp")}
+<div class="detail" style="margin-bottom:10px"><b>${esc(name)}</b><div class="tiny">${name==="Burcu"?"zuletzt online vor längerer Zeit":"privat"}</div></div>
+<div class="chat">${msgs.map(m=>`<div class="bubble ${m[0]==="out"?"out":"in"}">${esc(m[1])}<div class="tiny" style="text-align:right">${esc(m[2])}</div></div>`).join("")}</div>
+${name==="Burcu"?`<form class="compose" id="burcuForm"><input id="burcuInput" placeholder="Nachricht schreiben…"><button class="send">Senden</button></form><div class="composer-note">Du schreibst als die Person, die Mayas Handy gefunden hat.</div>`:""}
+</div>`;
+}
+return `<div class="page">${bar("WhatsApp")}<input class="search" id="waSearch" placeholder="Suchen"><div class="list">${names.map(n=>row(n,n==="Burcu"?"Maya du wirst vermisst ich vermisse dich ❤️":"Letzte Nachricht","chat",n)).join("")}</div></div>`;
+}
+
+function gallery(){
+const specials=[
+[451,"Atelier Noir","Älteres Teamfoto","🎨","Noah ist im Hintergrund sichtbar."],
+[452,"Atelier Noir","Älteres Gruppenfoto","👥","Noah ist auf dem Foto, ohne besondere Markierung."],
+[453,"22.09.","Maya vor dem Verlassen der WG","💄","Letztes normales Zeitfenster."],
+[454,"22.09.","Tasche / Arbeitsmaterial","👜","Arbeitsmaterial für den Termin."],
+[455,"22.09.","Letztes normales gespeichertes Foto","📸","Kein Kommentar, keine Markierung."]
+];
+return `<div class="page">${bar("Galerie")}<div class="chiprow"><span class="chip">Alle</span><span class="chip">Favoriten</span><span class="chip">Studio</span><span class="chip">WG</span><span class="chip">2026</span></div><div class="photos">${Array.from({length:60},(_,i)=>`<div class="photo"><button data-action="photo" data-id="GAL-${String(i+1).padStart(3,"0")}">${svgPhoto(galleryTopics[i%galleryTopics.length][2],i,"")}</button></div>`).join("")}${specials.map(s=>`<div class="photo"><button data-action="photo" data-id="GAL-${s[0]}">${svgPhoto(s[3],s[0],"")}</button></div>`).join("")}</div><div class="meta">Viele weitere normale Fotos existieren im Archiv. Nicht jedes Foto hat eine Bedeutung.</div></div>`;
+}
+function instagram(){
+const posts=[
+["POST-018","18.09.2026","💄","Soft glam · Atelier Noir","m.beauty.atelier"],
+["POST-019","20.09.2026","👗","ready for the night","m.beauty.atelier"],
+["POST-020","21.09.2026","✨","new week new looks","m.beauty.atelier"],
+["POST-021","22.09.2026","🪞","draft · not posted","Entwurf"]
+];
+return `<div class="page">${bar("Instagram")}<div class="detail"><h3>@m.beauty.atelier</h3><p>Make-up · Beauty · Lifestyle</p><span class="tag">2.4k Follower</span><span class="tag">öffentlich</span></div><div class="storybar">${["Maya","Isabelle","Atelier","Beauty","Travel"].map(x=>`<div class="story"><div class="storypic">◎</div>${x}</div>`).join("")}</div>${posts.map(p=>`<div class="igpost"><div class="ighead"><div class="avatar">◎</div><div><b>${esc(p[4])}</b><div class="tiny">${esc(p[1])}</div></div></div><div class="igimg">${p[2]}</div><div class="igbody"><b>${esc(p[3])}</b><div class="tiny">${esc(p[0])}</div></div></div>`).join("")}<div class="meta">Instagram ist öffentliche Selbstdarstellung und nicht automatisch ein Beweis für Ort oder Ereignis.</div></div>`;
+}
+function mail(){return `<div class="page">${bar("Mail")}<div class="chiprow"><span class="chip">Postfach</span><span class="chip">VIP</span><span class="chip">Gesendet</span><span class="chip">Archiv</span></div><div class="list">${storyEmails.map(m=>row(m.title,m.from+" · "+m.date,"mail",m.id)).join("")}</div></div>`;}
+function calendar(){return `<div class="page">${bar("Kalender")}<div class="timeline">${storyCalendar.map(c=>`<button class="row event" data-action="calendar" data-id="${c[0]}"><b>${esc(c[1])}</b><span>${esc(c[2])} · ${esc(c[3])}</span></button>`).join("")}</div><div class="meta">Ein Kalendertermin ist eine Planung, kein Beweis dafür, dass ein Termin tatsächlich stattgefunden hat.</div></div>`;}
+function contacts(){return `<div class="page">${bar("Kontakte")}<input class="search" id="contactSearch" placeholder="Suchen"><div class="list">${storyContacts.map(c=>row(c[0],c[1]+" · "+c[2],"contact",c[0])).join("")}</div></div>`;}
+function maps(){return `<div class="page">${bar("Maps")}<div class="list">${row("Atelier Noir","Arbeitsort · häufig gesucht")}${row("Adresse des Make-up-Termins","22.09. · 14:00")}${row("Café","zuletzt gesucht")}${row("Supermarkt","Alltag")}</div><div class="detail" style="margin-top:10px"><h3>Letzte Suchaktivitäten</h3><p>21.09. · Adresse des Make-up-Termins</p><p>22.09. · Route zur externen Adresse</p><p class="tiny">Eine Maps-Suche beweist nicht, dass Maya an einem Ort war.</p></div></div>`;}
+function notes(){const n=[
+["Einkauf","Milch · Kaffee · Waschmittel"],["Shoot morgen","Pinsel reinigen · Tasche packen"],["WG","Müll rausbringen"],["Manche Dinge fühlen sich gerade komplizierter an als sie sein müssten.",""],["Heute war eigentlich ein guter Tag.",""],["Atelier","neue Pinsel bestellen · Julien fragen"],["Termin","Adresse speichern · 14:00"]];return `<div class="page">${bar("Notizen")}<div class="list">${n.map(x=>row(x[0],x[1])).join("")}</div></div>`;}
+function files(){return `<div class="page">${bar("Dateien")}<div class="list">${row("Termin_Leon.pdf","Downloads · 21.09.2026 · PDF")}${row("Moodboard_September.pdf","Atelier Noir · PDF")}${row("Makeup_Invoice.pdf","Atelier Noir · PDF")}${row("IMG_4551.HEIC","Fotos · 22.09.2026")}${row("Downloads","7 Dateien")}</div></div>`;}
+function reminders(){return `<div class="page">${bar("Erinnerungen")}<div class="list">${row("Arbeit","Pinsel reinigen · erledigt")}${row("WG","Müll rausbringen · erledigt")}${row("Privat","Mama zurückrufen · erledigt")}${row("Termin","Adresse für 22.09. speichern · erledigt")}${row("Shopping","Wimpernkleber · offen")}</div></div>`;}
+function safari(){return `<div class="page">${bar("Safari")}<div class="list">${row("Atelier Noir","atelier-noir.example · 21.09.")}${row("Make-up Brushes Review","beauty blog · 20.09.")}${row("Train Stuttgart → Augsburg","DB Suche · 18.09.")}${row("Fake?","Maya hat keine Suche mit diesem Begriff gespeichert.")}</div><div class="meta">Privates Surfen und alte Tabs können existieren, sind aber nicht automatisch storyrelevant.</div></div>`;}
+function voice(){return `<div class="page">${bar("Sprachmemos")}<div class="list">${row("Voice_008","Arbeitsideen · 19.09. · 0:43")}${row("Voice_009","Einkauf · 21.09. · 0:18")}${row("Voice_010","Make-up Termin · 22.09. · 0:31")}</div></div>`;}
+function health(){return `<div class="page">${bar("Health")}<div class="detail"><h3>Aktivität</h3><p>21.09. · 7.842 Schritte</p><p>22.09. · 5.106 Schritte</p><p>23.09. · 1.024 Schritte</p><div class="callout">Die Daten sind unvollständig. Ein fehlender Tag ist kein automatischer Beweis für ein Ereignis.</div></div></div>`;}
+function wallet(){return `<div class="page">${bar("Wallet")}<div class="list">${row("Deutschlandticket","gültig · September 2026")}${row("Studio Event","abgelaufen")}${row("Kundenkarte","Beauty Store")}</div></div>`;}
+function translate(){return `<div class="page">${bar("Übersetzen")}<div class="list">${row("appointment","Termin · Englisch → Deutsch")}${row("maquillage","Make-up · Französisch → Deutsch")}${row("cliente","Kunde · Italienisch → Deutsch")}</div></div>`;}
+
+function showMail(id){const m=storyEmails.find(x=>x.id===id)||mailData.find(x=>x.id===id);if(!m)return;state.discovered.add(id);save();modal(`<h3>${esc(m.title)}</h3><p><b>Von:</b> ${esc(m.from)}</p><p><b>${esc(m.date)}</b></p><p style="white-space:pre-line">${esc(m.body)}</p>`);}
+function showCalendar(id){const c=storyCalendar.find(x=>x[0]===id)||calendarData.find(x=>x[0]===id);if(!c)return;state.discovered.add(id);save();modal(`<h3>${esc(c[2])}</h3><p>${esc(c[1])}</p><p>${esc(c[3])}</p>`);}
+function showContact(name){const c=storyContacts.find(x=>x[0]===name)||contactData.find(x=>x[0]===name);state.discovered.add("CONTACT:"+name);save();let extra="";if(name==="Noah Keller")extra='<div class="divider"></div><p>Früherer Praktikant bei Atelier Noir.</p><p class="tiny">Kontaktkarte enthält keine besondere Warnung.</p>';if(name==="Leon Hartmann")extra='<div class="divider"></div><p>Kunde · Make-up-Termin am 22.09.2026.</p>';modal(`<h3>${esc(name)}</h3><p>${esc(c?c[1]:"Kontakt")}</p><p class="tiny">${esc(c?c[2]:"")}</p>${extra}`);}
+
+// Burcu communication is authored, not freeform AI. Intent is inferred from normal wording.
+function handleBurcuText(val){
+const x=val.toLowerCase();state.burcuLast=val;state.burcuSent=true;
+if(/noah|praktikant|intern/.test(x)) state.burcuStage=Math.max(state.burcuStage||1,3);
+else if(/tag|datum|22\.09|termin|wann/.test(x)) state.burcuStage=Math.max(state.burcuStage||1,2);
+else if(/warum|passiert|person|wer|verdächtig|komisch/.test(x)) state.burcuStage=Math.max(state.burcuStage||1,2);
+else state.burcuStage=Math.max(state.burcuStage||1,1);
+save();render();}
+
+// Override binding with story-safe message handling.
+function bind(){
+document.querySelectorAll("[data-pin]").forEach(b=>b.addEventListener("click",()=>{const n=b.dataset.pin;if(n==="⌫")state.pin=state.pin.slice(0,-1);else if(state.pin.length<4)state.pin+=n;if(state.pin==="1607"){state.unlocked=true;state.pin="";state.page="home";toast("iPhone entsperrt");}render();}));
+document.querySelectorAll("[data-action='app']").forEach(b=>b.addEventListener("click",()=>openPage(b.dataset.id)));
+document.querySelectorAll("[data-action='home']").forEach(b=>b.addEventListener("click",()=>openPage("home")));
+document.querySelectorAll("[data-action='chat']").forEach(b=>b.addEventListener("click",()=>{state.page="chat:"+b.dataset.id;render();}));
+document.querySelectorAll("[data-action='photo']").forEach(b=>b.addEventListener("click",()=>showPhoto(b.dataset.id)));
+document.querySelectorAll("[data-action='contact']").forEach(b=>b.addEventListener("click",()=>showContact(b.dataset.id)));
+document.querySelectorAll("[data-action='mail']").forEach(b=>b.addEventListener("click",()=>showMail(b.dataset.id)));
+document.querySelectorAll("[data-action='calendar']").forEach(b=>b.addEventListener("click",()=>showCalendar(b.dataset.id)));
+const form=document.getElementById("burcuForm");if(form)form.addEventListener("submit",e=>{e.preventDefault();const val=document.getElementById("burcuInput").value.trim();if(val)handleBurcuText(val);});
+const gs=document.getElementById("globalSearch");if(gs)gs.addEventListener("input",()=>searchResults(gs.value));
+const cs=document.getElementById("contactSearch");if(cs)cs.addEventListener("input",()=>{const q=cs.value.toLowerCase();document.querySelectorAll("[data-action='contact']").forEach(b=>b.style.display=b.innerText.toLowerCase().includes(q)?"":"none");});
+const ws=document.getElementById("waSearch");if(ws)ws.addEventListener("input",()=>{const q=ws.value.toLowerCase();document.querySelectorAll("[data-action='chat']").forEach(b=>b.style.display=b.innerText.toLowerCase().includes(q)?"":"none");});
+}
+function render(){
+if(!state.unlocked){view.innerHTML=lock();bind();return;}
+if(state.page==="home"){view.innerHTML=home();bind();return;}
+let content;switch(state.page){
+case"wa":content=wa();break;case"gallery":content=gallery();break;case"contacts":content=contacts();break;case"phone":content=phone();break;case"mail":content=mail();break;case"calendar":content=calendar();break;case"maps":content=maps();break;case"instagram":content=instagram();break;case"notes":content=notes();break;case"files":content=files();break;case"camera":content=camera();break;case"music":content=music();break;case"weather":content=weather();break;case"clock":content=clockPage();break;case"settings":content=settings();break;case"search":content=search();break;case"reminders":content=reminders();break;case"safari":content=safari();break;case"voice":content=voice();break;case"health":content=health();break;case"wallet":content=wallet();break;case"translate":content=translate();break;default:content=home();}
+view.innerHTML=content;bind();}
+
 render();
 })();
 </script>
